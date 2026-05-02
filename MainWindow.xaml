@@ -1,0 +1,334 @@
+<Window
+    x:Class="StudentManagement.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:StudentManagement.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:StudentManagement"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="學生管理系統"
+    Width="960"
+    Height="600"
+    MinWidth="820"
+    MinHeight="480"
+    FontFamily="Segoe UI, Microsoft JhengHei UI"
+    Background="#F5F7FA"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <converter:InverseBooleanToVisibilityConverter x:Key="VisibilityConverter" />
+
+        <!--  色票  -->
+        <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#E5E7EB" />
+        <SolidColorBrush x:Key="TextBrush" Color="#1F2937" />
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#6B7280" />
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#3B82F6" />
+        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#2563EB" />
+        <SolidColorBrush x:Key="SuccessBrush" Color="#10B981" />
+        <SolidColorBrush x:Key="SuccessHoverBrush" Color="#059669" />
+        <SolidColorBrush x:Key="DangerBrush" Color="#EF4444" />
+        <SolidColorBrush x:Key="DangerHoverBrush" Color="#DC2626" />
+        <SolidColorBrush x:Key="DisabledBrush" Color="#D1D5DB" />
+        <SolidColorBrush x:Key="DisabledTextBrush" Color="#9CA3AF" />
+
+        <!--  TextBlock 預設樣式  -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <!--  欄位標籤  -->
+        <Style x:Key="LabelText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+        </Style>
+
+        <!--  欄位數值（顯示模式）  -->
+        <Style x:Key="ValueText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <!--  TextBox 樣式  -->
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="Background" Value="{StaticResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border
+                            x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6"
+                            SnapsToDevicePixels="True">
+                            <ScrollViewer
+                                x:Name="PART_ContentHost"
+                                Padding="{TemplateBinding Padding}"
+                                VerticalAlignment="Center"
+                                Focusable="False" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#F3F4F6" />
+                                <Setter Property="Foreground" Value="{StaticResource DisabledTextBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  按鈕基礎樣式  -->
+        <Style x:Key="BaseButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="border"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            SnapsToDevicePixels="True">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource DisabledBrush}" />
+                                <Setter Property="Foreground" Value="#F3F4F6" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="PrimaryButton"
+            BasedOn="{StaticResource BaseButton}"
+            TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource PrimaryHoverBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style
+            x:Key="SuccessButton"
+            BasedOn="{StaticResource BaseButton}"
+            TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource SuccessBrush}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SuccessHoverBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style
+            x:Key="DangerButton"
+            BasedOn="{StaticResource BaseButton}"
+            TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource DangerBrush}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DangerHoverBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  卡片  -->
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="16,14" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+        </Style>
+
+        <!--  CheckBox  -->
+        <Style TargetType="CheckBox">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,12,0" />
+        </Style>
+
+        <!--  欄位群組（顯示/編輯 切換用，提供一致寬度）  -->
+        <Style x:Key="FieldCell" TargetType="Grid">
+            <Setter Property="Margin" Value="0,0,18,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  頂部新增表單  -->
+        <Border
+            Grid.Row="0"
+            Margin="20,20,20,10"
+            Style="{StaticResource Card}">
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <TextBlock Style="{StaticResource LabelText}" Text="姓名" />
+                <TextBox
+                    Width="140"
+                    Margin="0,0,16,0"
+                    Text="{Binding Name}" />
+                <TextBlock Style="{StaticResource LabelText}" Text="年紀" />
+                <TextBox
+                    Width="80"
+                    Margin="0,0,16,0"
+                    Text="{Binding Age}"
+                    TextAlignment="Right" />
+                <TextBlock Style="{StaticResource LabelText}" Text="身高" />
+                <TextBox
+                    Width="80"
+                    Margin="0,0,16,0"
+                    Text="{Binding Height}"
+                    TextAlignment="Right" />
+                <TextBlock Style="{StaticResource LabelText}" Text="體重" />
+                <TextBox
+                    Width="80"
+                    Margin="0,0,16,0"
+                    Text="{Binding Weight}"
+                    TextAlignment="Right" />
+                <Button
+                    Command="{Binding AddStudentCommand}"
+                    CommandParameter="{Binding}"
+                    Content="+ 新增資料"
+                    Style="{StaticResource PrimaryButton}" />
+            </StackPanel>
+        </Border>
+
+        <!--  學生列表  -->
+        <ScrollViewer
+            Grid.Row="1"
+            Margin="20,10,20,20"
+            VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="thingItems" ItemsSource="{Binding students}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,0,10" Style="{StaticResource Card}">
+                            <DockPanel LastChildFill="True">
+                                <Button
+                                    Margin="8,0,0,0"
+                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Content="✕ 刪除"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding IsDeletable}"
+                                    Style="{StaticResource DangerButton}"
+                                    Tag="{Binding Name}" />
+                                <Button
+                                    Margin="8,0,0,0"
+                                    Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Content="編輯"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding IsEditable}"
+                                    Style="{StaticResource PrimaryButton}" />
+                                <Button
+                                    Margin="8,0,0,0"
+                                    Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Content="存檔"
+                                    DockPanel.Dock="Right"
+                                    IsEnabled="{Binding IsSavable}"
+                                    Style="{StaticResource SuccessButton}" />
+
+                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsCompleted}" />
+
+                                    <!--  姓名  -->
+                                    <Grid Style="{StaticResource FieldCell}">
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsEditable, Converter={StaticResource VisibilityConverter}, ConverterParameter=inverse}">
+                                            <TextBlock Style="{StaticResource LabelText}" Text="姓名" />
+                                            <TextBlock Style="{StaticResource ValueText}" Text="{Binding Name}" />
+                                        </StackPanel>
+                                        <TextBox
+                                            Width="120"
+                                            Text="{Binding Name}"
+                                            Visibility="{Binding IsEditable, Converter={StaticResource VisibilityConverter}}" />
+                                    </Grid>
+
+                                    <!--  年紀  -->
+                                    <Grid Style="{StaticResource FieldCell}">
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsEditable, Converter={StaticResource VisibilityConverter}, ConverterParameter=inverse}">
+                                            <TextBlock Style="{StaticResource LabelText}" Text="年紀" />
+                                            <TextBlock Style="{StaticResource ValueText}" Text="{Binding Age}" />
+                                        </StackPanel>
+                                        <TextBox
+                                            Width="80"
+                                            Text="{Binding Age}"
+                                            TextAlignment="Right"
+                                            Visibility="{Binding IsEditable, Converter={StaticResource VisibilityConverter}}" />
+                                    </Grid>
+
+                                    <!--  身高  -->
+                                    <Grid Style="{StaticResource FieldCell}">
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsEditable, Converter={StaticResource VisibilityConverter}, ConverterParameter=inverse}">
+                                            <TextBlock Style="{StaticResource LabelText}" Text="身高" />
+                                            <TextBlock Style="{StaticResource ValueText}" Text="{Binding Height}" />
+                                        </StackPanel>
+                                        <TextBox
+                                            Width="80"
+                                            Text="{Binding Height}"
+                                            TextAlignment="Right"
+                                            Visibility="{Binding IsEditable, Converter={StaticResource VisibilityConverter}}" />
+                                    </Grid>
+
+                                    <!--  體重  -->
+                                    <Grid Style="{StaticResource FieldCell}">
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsEditable, Converter={StaticResource VisibilityConverter}, ConverterParameter=inverse}">
+                                            <TextBlock Style="{StaticResource LabelText}" Text="體重" />
+                                            <TextBlock Style="{StaticResource ValueText}" Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <TextBox
+                                            Width="80"
+                                            Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}"
+                                            TextAlignment="Right"
+                                            Visibility="{Binding IsEditable, Converter={StaticResource VisibilityConverter}}" />
+                                    </Grid>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Window>
